@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AEGON Policy Compiler Developer Guide</title>
+  <style>
+    :root{
+      --bg: #0b1020;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.08);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.72);
+      --faint: rgba(255,255,255,0.55);
+      --line: rgba(255,255,255,0.12);
+      --accent: #8ab4ff;
+      --accent2: #b0ffcf;
+      --warn: #ffd479;
+      --danger: #ff8a8a;
+      --codebg: rgba(0,0,0,0.35);
+      --shadow: 0 16px 48px rgba(0,0,0,0.45);
+      --radius: 16px;
+    }
+
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(138,180,255,0.20), transparent 60%),
+                  radial-gradient(1200px 700px at 80% 20%, rgba(176,255,207,0.10), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    header{
+      max-width: 1080px;
+      margin: 28px auto 0 auto;
+      padding: 22px 22px 10px 22px;
+    }
+
+    header h1{
+      margin:0;
+      font-size: 2.0rem;
+      letter-spacing: 0.2px;
+    }
+    header h2{
+      margin: 6px 0 0 0;
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    header .meta{
+      margin-top: 10px;
+      color: var(--faint);
+      font-size: 0.98rem;
+    }
+    header .meta code{
+      background: var(--codebg);
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    main{
+      max-width: 1080px;
+      margin: 0 auto 80px auto;
+      padding: 0 22px 40px 22px;
+    }
+
+    .card{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px;
+      margin: 18px 0;
+    }
+
+    .micro-abstract h2{
+      margin: 0 0 8px 0;
+      font-size: 1.25rem;
+    }
+    .micro-abstract p{ margin: 0; color: var(--muted); }
+
+    hr{
+      border:0;
+      border-top: 1px solid var(--line);
+      margin: 18px 0;
+    }
+
+    h1.section-title{
+      margin-top: 26px;
+      font-size: 1.55rem;
+    }
+    h2.subsection-title{
+      margin-top: 18px;
+      font-size: 1.18rem;
+      color: var(--text);
+    }
+
+    p{ color: var(--muted); }
+
+    .highlight-block{
+      background: linear-gradient(180deg, rgba(138,180,255,0.14), rgba(255,255,255,0.05));
+      border: 1px solid rgba(138,180,255,0.20);
+      border-radius: var(--radius);
+      padding: 16px 16px;
+      margin: 18px 0;
+    }
+
+    .note{
+      background: linear-gradient(180deg, rgba(176,255,207,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(176,255,207,0.22);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      margin: 16px 0;
+    }
+
+    .warning{
+      background: linear-gradient(180deg, rgba(255,212,121,0.16), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,212,121,0.28);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      margin: 16px 0;
+    }
+
+    .danger{
+      background: linear-gradient(180deg, rgba(255,138,138,0.15), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,138,138,0.26);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      margin: 16px 0;
+    }
+
+    .label{
+      display:inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-right: 8px;
+    }
+
+    pre, code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    pre{
+      background: var(--codebg);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      overflow:auto;
+      color: rgba(255,255,255,0.9);
+      margin: 12px 0 8px 0;
+    }
+
+    .code-annotation{
+      color: var(--faint);
+      font-size: 0.95rem;
+      margin: 0 0 14px 0;
+    }
+
+    ol.toc{
+      margin: 10px 0 0 20px;
+      padding: 0 0 0 16px;
+      color: var(--muted);
+    }
+    ol.toc li{
+      margin: 6px 0;
+    }
+
+    .toc-top{
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 16px;
+      margin: 14px 0 22px 0;
+    }
+
+    .toc-top h2{
+      margin: 0 0 8px 0;
+      font-size: 1.2rem;
+    }
+
+    /* Right floating quick-jump */
+    .floating-menu{
+      position: fixed;
+      top: 84px;
+      right: 18px;
+      width: 270px;
+      max-height: calc(100vh - 120px);
+      overflow: auto;
+      background: rgba(10,14,28,0.84);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 14px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+      padding: 12px 12px;
+      z-index: 9999;
+      backdrop-filter: blur(10px);
+    }
+    .floating-menu h3{
+      margin: 0 0 10px 0;
+      font-size: 1.0rem;
+      color: rgba(255,255,255,0.90);
+      letter-spacing: 0.2px;
+    }
+    .floating-menu a{
+      display: block;
+      padding: 6px 8px;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.78);
+      font-size: 0.95rem;
+    }
+    .floating-menu a:hover{
+      background: rgba(138,180,255,0.13);
+      color: rgba(255,255,255,0.94);
+      text-decoration: none;
+    }
+    .floating-menu .indent{
+      margin-left: 10px;
+      font-size: 0.93rem;
+      color: rgba(255,255,255,0.70);
+    }
+
+    /* Responsive: hide quick jump on small screens */
+    @media (max-width: 1100px){
+      .floating-menu{ display:none; }
+      header, main{ max-width: 920px; }
+    }
+
+    /* Tables */
+    table{
+      width:100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      vertical-align: top;
+    }
+    th{
+      text-align: left;
+      color: rgba(255,255,255,0.88);
+      background: rgba(255,255,255,0.05);
+    }
+    td{
+      color: rgba(255,255,255,0.78);
+    }
+
+    .small{ font-size: 0.95rem; color: var(--faint); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ========================= -->
+  <!-- FLOATING QUICK JUMP MENU  -->
+  <!-- ========================= -->
+  <div class="floating-menu" aria-label="Quick Jump">
+    <h3>Quick Jump</h3>
+
+    <a href="#sec1">§1 Overview</a>
+    <a href="#sec2">§2 Conceptual Model</a>
+    <a href="#sec3">§3 Inputs and Outputs</a>
+    <a href="#sec4">§4 Failure-Class Semantics</a>
+    <a href="#sec5">§5 Policy Bundles and Policy IR</a>
+    <a href="#sec6">§6 Minimal Policy Language</a>
+    <a href="#sec7">§7 Opcodes and Constructs</a>
+    <a href="#sec8">§8 Parsing and Canonicalization</a>
+    <a href="#sec9">§9 Compilation Determinism</a>
+    <a href="#sec10">§10 Errors and Diagnostics</a>
+    <a href="#sec11">§11 Security and Governance</a>
+    <a href="#sec12">§12 Example Workflows</a>
+    <a href="#sec13">§13 Integration Patterns</a>
+    <a href="#sec14">§14 Licensing and Support</a>
+    <a href="#sec15">§15 Scope, Non-Goals, and Conclusion</a>
+
+    <hr style="margin:10px 0; border-top:1px solid rgba(200,200,255,0.15);" />
+
+    <a href="#appendices">Appendices</a>
+    <a class="indent" href="#appendix-a">Appendix A — Glossary</a>
+    <a class="indent" href="#appendix-b">Appendix B — Error Catalog</a>
+    <a class="indent" href="#appendix-c">Appendix C — Index</a>
+  </div>
+
+  <header>
+    <h1>AEGON Policy Compiler Developer Guide</h1>
+    <h2>Extended Edition (Version 1) · AAD Systems™ · January 2026</h2>
+    <div class="meta">
+      Canonical URL: <code>https://aadsystems.com/aegon/compiler</code>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ========================= -->
+    <!-- MICRO-ABSTRACT BLOCK      -->
+    <!-- ========================= -->
+    <div class="card micro-abstract">
+      <h2>Micro-Abstract</h2>
+      <p>
+        This Developer Guide defines the AEGON™ Policy Compiler: a deterministic compiler that maps
+        a finite semantic regime (failure-class ontology) into a canonical policy artifact (policy bundle / Policy IR).
+        AEGON compilation is total, repeatable, and audit-friendly, and it treats non-action as an explicit compiled result.
+        The compiler emits declarative artifacts only; it does not execute, enforce, learn, infer, optimize, or remediate.
+      </p>
+    </div>
+
+    <div class="note">
+  <strong>Foundational papers:</strong>
+  <ul>
+    <li>
+      <a href="https://papers.aadsystems.com/egon-core" target="_blank" rel="noopener">
+        The AEGON Core — Semantic Classification and Failure Ontology
+      </a>
+    </li>
+    <li>
+      <a href="https://papers.aadsystems.com/egon-policy-compiler" target="_blank" rel="noopener">
+        The AEGON Policy Compiler — Deterministic Compilation from Failure Semantics to Policy Algebra
+      </a>
+    </li>
+  </ul>
+</div>
+
+    <!-- ========================= -->
+    <!-- TOP TABLE OF CONTENTS     -->
+    <!-- ========================= -->
+    <div class="toc-top" id="toc">
+      <h2>Table of Contents</h2>
+      <ol class="toc">
+        <li><a href="#sec1">§1 Overview</a></li>
+        <li><a href="#sec2">§2 Conceptual Model</a></li>
+        <li><a href="#sec3">§3 Inputs and Outputs</a></li>
+        <li><a href="#sec4">§4 Failure-Class Semantics</a></li>
+        <li><a href="#sec5">§5 Policy Bundles and Policy IR</a></li>
+        <li><a href="#sec6">§6 Minimal Policy Language</a></li>
+        <li><a href="#sec7">§7 Opcodes and Constructs</a></li>
+        <li><a href="#sec8">§8 Parsing and Canonicalization</a></li>
+        <li><a href="#sec9">§9 Compilation Determinism</a></li>
+        <li><a href="#sec10">§10 Errors and Diagnostics</a></li>
+        <li><a href="#sec11">§11 Security and Governance</a></li>
+        <li><a href="#sec12">§12 Example Workflows</a></li>
+        <li><a href="#sec13">§13 Integration Patterns</a></li>
+        <li><a href="#sec14">§14 Licensing and Support</a></li>
+        <li><a href="#sec15">§15 Scope, Non-Goals, and Conclusion</a></li>
+        <li><a href="#appendices">Appendices</a>
+          <ol class="toc">
+            <li><a href="#appendix-a">Appendix A — Glossary</a></li>
+            <li><a href="#appendix-b">Appendix B — Error Catalog</a></li>
+            <li><a href="#appendix-c">Appendix C — Index</a></li>
+          </ol>
+        </li>
+      </ol>
+    </div>
+
+    <div class="highlight-block">
+      <h2 class="subsection-title" style="margin:0 0 6px 0;">📘 Related Paper</h2>
+      <p style="margin:0;">
+        The mathematical foundation for AEGON failure semantics is defined in the <strong>AEGON Algebra</strong>
+        (finite semantic ontology, partial orders / joins, deterministic interpretation, and policy compilation semantics).
+      </p>
+      <p style="margin:10px 0 0 0;">
+        <a href="https://papers.aadsystems.com/aegon-algebra-v1" target="_blank"><strong>➜ AEGON Algebra (canonical link)</strong></a>
+      </p>
+    </div>
+
+    <hr>
+
+    <!-- ================================================== -->
+    <!-- §1 OVERVIEW                                         -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec1">§1 Overview</h1>
+    <div class="card">
+      <p>
+        The AEGON™ Policy Compiler is a deterministic compilation system that converts a finite semantic classification
+        (a failure-class regime) into a canonical policy artifact (a policy bundle). The compiler is designed for
+        reliability workflows where semantic clarity, repeatability, and governance are required.
+      </p>
+
+      <div class="note">
+        <span class="label">Core Principle</span>
+        <span class="small">
+          AEGON compiles <em>meaning</em> into policy artifacts. It does not execute or enforce those artifacts.
+        </span>
+      </div>
+
+      <p>
+        AEGON is intended to operate alongside an existing system’s observation pipeline. It consumes the output of a fixed
+        deterministic classifier (defined in the AEGON Algebra) and emits a structured policy bundle suitable for downstream
+        review, auditing, dispatch, or controlled execution by separate systems.
+      </p>
+
+      <div class="warning">
+        <span class="label">Non-Goal</span>
+        <span class="small">
+          AEGON is not an “autonomous remediation agent.” AEGON does not perform inference, learning, or probabilistic scoring.
+        </span>
+      </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §2 CONCEPTUAL MODEL                                 -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec2">§2 Conceptual Model</h1>
+    <div class="card">
+      <p>
+        The AEGON compilation pipeline is intentionally minimal:
+        observations are normalized, classified into a finite semantic regime,
+        and compiled into a canonical policy artifact.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th>Object</th>
+            <th>Deterministic Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mono">Observe</span></td>
+            <td>Normalized observation</td>
+            <td><span class="mono">o ∈ O</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">Classify</span></td>
+            <td>Failure-class regime</td>
+            <td><span class="mono">C(o) ∈ F</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">Compile</span></td>
+            <td>Policy bundle / Policy IR</td>
+            <td><span class="mono">Π(C(o)) ∈ P</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">Serialize</span></td>
+            <td>Canonical JSON</td>
+            <td><span class="mono">S(Π(C(o))) ∈ 𝒥</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <span class="label">Separation</span>
+        <span class="small">
+          Compilation (AEGON) is semantically upstream of enforcement (external).
+          This separation is what enables auditability and stable interpretation.
+        </span>
+      </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §3 INPUTS AND OUTPUTS                               -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec3">§3 Inputs and Outputs</h1>
+    <div class="card">
+      <p>
+        AEGON consumes a failure-class regime (or a classifier output that resolves to a regime) and produces a policy bundle.
+        The compiler is deterministic: identical semantic input yields identical policy output.
+      </p>
+
+      <h2 class="subsection-title">§3.1 Inputs</h2>
+      <p>
+        Inputs are semantic regimes in a finite ontology. The precise observation structure is not required by the compiler;
+        the compiler operates over <span class="mono">F</span>, not raw telemetry.
+      </p>
+
+      <h2 class="subsection-title">§3.2 Outputs</h2>
+      <p>
+        Outputs are policy bundles in a structured Policy IR, suitable for canonical serialization and downstream processing.
+        Policy bundles represent declarative intent (e.g., freeze mutation, isolate dependency, page on-call) and are not executable
+        by themselves.
+      </p>
+
+      <pre>{
+  "tier": "pro",
+  "on": "CONTROL_PLANE_SATURATION",
+  "actions": [
+    { "name": "freeze_control_plane", "params": { "window_minutes": 30 } },
+    { "name": "page_oncall", "params": { "severity": "high" } }
+  ],
+  "evidence": ["incident_id", "top_signals", "invariant_summary"],
+  "notes": ["compiled_deterministically", "non_executing_artifact"]
+}</pre>
+      <p class="code-annotation">Annotation: A canonical policy bundle is an auditable artifact. Enforcement is external to AEGON.</p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §4 FAILURE-CLASS SEMANTICS                          -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec4">§4 Failure-Class Semantics</h1>
+    <div class="card">
+      <p>
+        AEGON relies on a finite semantic ontology of failure classes. These failure classes represent violated structural invariants
+        and are treated as semantic atoms of system interpretation. A partial order over failure classes represents semantic dominance
+        (escalation and containment), enabling canonical reconciliation where multiple regimes apply.
+      </p>
+
+      <div class="highlight-block">
+        <span class="label">Semantic Dominance</span>
+        <span class="small">
+          If <span class="mono">Fᵢ ≤ Fⱼ</span>, then <span class="mono">Fⱼ</span> semantically dominates (escalates) <span class="mono">Fᵢ</span>.
+          In practice: a more severe regime dominates a less severe regime for policy selection.
+        </span>
+      </div>
+
+      <p>
+        Where joins are defined, AEGON can reconcile multi-regime evidence by selecting a least upper bound, producing a single canonical
+        regime rather than competing interpretations.
+      </p>
+
+      <div class="note">
+        <span class="label">Interpretation</span>
+        <span class="small">
+          “No competing interpretations” is formalized categorically by the thinness of the poset-category over failure classes.
+        </span>
+      </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §5 POLICY BUNDLES AND POLICY IR                     -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec5">§5 Policy Bundles and Policy IR</h1>
+    <div class="card">
+      <p>
+        A policy bundle is a structured object that binds a triggering failure class to a canonical set of policy actions,
+        capability gates, evidence requirements, and human-facing annotations. The Policy IR is designed to be stable, serializable,
+        and governance-friendly.
+      </p>
+
+      <h2 class="subsection-title">§5.1 Bundle Components</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Purpose</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">on</td>
+            <td>Triggering failure class</td>
+            <td>Finite ontology; deterministic selection</td>
+          </tr>
+          <tr>
+            <td class="mono">tier</td>
+            <td>Capability gate / entitlement</td>
+            <td>Optional; enables controlled exposure</td>
+          </tr>
+          <tr>
+            <td class="mono">actions</td>
+            <td>Ordered declarative action list</td>
+            <td>Order is meaningful; execution is external</td>
+          </tr>
+          <tr>
+            <td class="mono">evidence</td>
+            <td>Required explanatory artifacts</td>
+            <td>Supports audit, review, governance</td>
+          </tr>
+          <tr>
+            <td class="mono">notes</td>
+            <td>Human-facing annotations</td>
+            <td>Non-normative, informational</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="subsection-title">§5.2 Neutral Policy</h2>
+      <p>
+        Non-action is represented explicitly as a neutral policy bundle. This prevents “implicit defaults” from being conflated with
+        semantic meaning. If the semantic regime is neutral (no violated invariants), compilation yields a neutral bundle with an empty
+        action list (or an explicit no-op action).
+      </p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §6 MINIMAL POLICY LANGUAGE                          -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec6">§6 Minimal Policy Language</h1>
+    <div class="card">
+      <p>
+        AEGON supports a minimal policy language intended for human-authored policy mappings. The language is finite and intentionally
+        non-Turing-complete: it contains no loops, recursion, or dynamic inference. Expressiveness is achieved through the finite choice
+        of failure class and the ordered action list.
+      </p>
+
+      <h2 class="subsection-title">§6.1 Minimal Constructs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Construct</th>
+            <th>Meaning</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">TIER</td>
+            <td>Capability gate</td>
+            <td class="mono">TIER pro</td>
+          </tr>
+          <tr>
+            <td class="mono">ON</td>
+            <td>Trigger failure class</td>
+            <td class="mono">ON CONTROL_PLANE_SATURATION</td>
+          </tr>
+          <tr>
+            <td class="mono">DO</td>
+            <td>Emit action</td>
+            <td class="mono">DO freeze_control_plane</td>
+          </tr>
+          <tr>
+            <td class="mono">WITH</td>
+            <td>Attach parameters</td>
+            <td class="mono">WITH window_minutes=30</td>
+          </tr>
+          <tr>
+            <td class="mono">END</td>
+            <td>Close block</td>
+            <td class="mono">END</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="subsection-title">§6.2 Code Example</h2>
+      <pre>TIER pro
+ON CONTROL_PLANE_SATURATION
+DO freeze_control_plane
+WITH window_minutes=30
+DO page_oncall
+WITH severity=high
+END</pre>
+      <p class="code-annotation">Annotation: The policy language is a presentation layer. Semantics are determined by compilation.</p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §7 OPCODES AND CONSTRUCTS                           -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec7">§7 Opcodes and Constructs</h1>
+    <div class="card">
+      <p>
+        In AEGON documentation, “opcode” refers to a minimal syntactic construct with a fixed semantic role in the compilation process.
+        The policy language constructs are treated as opcodes in the sense that they are finite, declarative, and structurally stable.
+      </p>
+
+      <div class="note">
+        <span class="label">Design Choice</span>
+        <span class="small">
+          The small opcode set enforces semantic predictability and prevents hidden control-flow from entering the policy layer.
+        </span>
+      </div>
+
+      <h2 class="subsection-title">§7.1 Opcode Semantics Summary</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Opcode</th>
+            <th>Role</th>
+            <th>Compiler Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">TIER</td>
+            <td>Gate policy by capability</td>
+            <td>Sets bundle entitlement metadata</td>
+          </tr>
+          <tr>
+            <td class="mono">ON</td>
+            <td>Bind to failure class</td>
+            <td>Determines trigger of bundle</td>
+          </tr>
+          <tr>
+            <td class="mono">DO</td>
+            <td>Add action</td>
+            <td>Appends ordered action node</td>
+          </tr>
+          <tr>
+            <td class="mono">WITH</td>
+            <td>Parameterize action</td>
+            <td>Attaches finite key–value map</td>
+          </tr>
+          <tr>
+            <td class="mono">END</td>
+            <td>Close policy block</td>
+            <td>Commits bundle for canonicalization</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §8 PARSING AND CANONICALIZATION                     -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec8">§8 Parsing and Canonicalization</h1>
+    <div class="card">
+      <p>
+        The compiler parses policy source into semantic components (trigger, gate, ordered actions). It then canonicalizes the output:
+        field ordering, normalized parameter formatting, and stable serialization conventions.
+      </p>
+
+      <h2 class="subsection-title">§8.1 Canonical JSON</h2>
+      <p>
+        Canonicalization ensures deterministic output across environments. AEGON uses stable ordering and normalization rules to produce
+        bit-for-bit identical serialized policy bundles under identical inputs.
+      </p>
+
+      <pre>{
+  "tier": "pro",
+  "on": "CONTROL_PLANE_SATURATION",
+  "actions": [
+    { "name": "freeze_control_plane", "params": { "window_minutes": 30 } },
+    { "name": "page_oncall", "params": { "severity": "high" } }
+  ],
+  "evidence": [],
+  "notes": []
+}</pre>
+      <p class="code-annotation">Annotation: Canonical JSON is deterministic and audit-friendly. It is not an execution plan.</p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §9 COMPILATION DETERMINISM                          -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec9">§9 Compilation Determinism</h1>
+    <div class="card">
+      <p>
+        Determinism is a primary property of AEGON compilation. Identical semantic regimes and identical policy mappings yield identical
+        policy bundles. This supports reproducibility, governance, and reliability workflows.
+      </p>
+
+      <div class="highlight-block">
+        <span class="label">Determinism</span>
+        <span class="small">
+          AEGON compilation has no learning, randomness, or adaptive state. The compiler is a deterministic map from a finite semantic domain.
+        </span>
+      </div>
+
+      <h2 class="subsection-title">§9.1 Neutrality</h2>
+      <p>
+        Neutrality is explicitly constructed: if the failure class is the neutral regime, the compiled result is a neutral policy bundle.
+        This makes “no action” a first-class semantic result rather than an implicit default.
+      </p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §10 ERRORS AND DIAGNOSTICS                          -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec10">§10 Errors and Diagnostics</h1>
+    <div class="card">
+      <p>
+        AEGON errors are designed to be deterministic, descriptive, and stable. The compiler should never “guess.”
+        Diagnostic output is intended for developers and operators, and it should support quick resolution and auditing.
+      </p>
+
+      <h2 class="subsection-title">§10.1 Error Categories</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Typical Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">ParseError</td>
+            <td>Invalid syntax or malformed opcode sequence</td>
+            <td>Fix source policy file; recompile</td>
+          </tr>
+          <tr>
+            <td class="mono">UnknownFailureClass</td>
+            <td>Trigger references non-ontology symbol</td>
+            <td>Correct spelling / update mapping</td>
+          </tr>
+          <tr>
+            <td class="mono">InvalidParameter</td>
+            <td>Parameter violates allowed domain</td>
+            <td>Normalize types / keys; recompile</td>
+          </tr>
+          <tr>
+            <td class="mono">UnsupportedTier</td>
+            <td>Capability gate references unknown tier</td>
+            <td>Adjust tier or gate configuration</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="subsection-title">§10.2 Example Diagnostic</h2>
+      <pre>[AEGON] ParseError: expected END before EOF
+  at line 6: DO page_oncall
+  hint: close the policy block with END</pre>
+      <p class="code-annotation">Annotation: Diagnostics are deterministic and do not alter compilation semantics.</p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §11 SECURITY AND GOVERNANCE                         -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec11">§11 Security and Governance</h1>
+    <div class="card">
+      <p>
+        AEGON is designed to support enterprise governance. The compiler produces artifacts that can be reviewed, signed, staged,
+        audited, and deployed under existing change-control systems. AEGON does not require privileged execution.
+      </p>
+
+      <div class="warning">
+        <span class="label">Safety Boundary</span>
+        <span class="small">
+          AEGON does not execute remediation. Any execution layer must implement its own approvals, rate-limits, and safety gates.
+        </span>
+      </div>
+
+      <h2 class="subsection-title">§11.1 Auditability</h2>
+      <p>
+        Policy bundles can include evidence requirements and annotations to support traceability. Canonical serialization enables exact
+        comparison across time, environments, and releases.
+      </p>
+
+      <h2 class="subsection-title">§11.2 Change Control</h2>
+      <p>
+        AEGON supports a controlled lifecycle: policy source changes are reviewed, compiled, diffed, and promoted through environments.
+        This enables deterministic policy evolution rather than ad hoc live edits.
+      </p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §12 EXAMPLE WORKFLOWS                               -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec12">§12 Example Workflows</h1>
+    <div class="card">
+      <p>
+        This section provides practical workflows showing how AEGON fits into real reliability processes.
+        Examples are declarative and deterministic, and they separate compilation from enforcement.
+      </p>
+
+      <h2 class="subsection-title">§12.1 Workflow: Compile a Policy Pack</h2>
+      <pre># 1) Author policy source
+# 2) Compile to Policy IR
+# 3) Validate canonical JSON
+# 4) Promote artifact to staging / production</pre>
+      <p class="code-annotation">Annotation: AEGON output is an artifact suitable for promotion pipelines.</p>
+
+      <h2 class="subsection-title">§12.2 Workflow: Neutral Regime</h2>
+      <pre># Input: failure class F0 (neutral)
+# Output: policy bundle p0 with empty action list</pre>
+      <p class="code-annotation">Annotation: Non-action is explicitly represented and auditable.</p>
+
+      <h2 class="subsection-title">§12.3 Workflow: Multi-Regime Reconciliation (Join)</h2>
+      <pre># Input evidence: regime Fa and regime Fb
+# Resolve: Fa ∨ Fb (least-dominating regime)
+# Compile: Π(Fa ∨ Fb) -> canonical policy bundle</pre>
+      <p class="code-annotation">Annotation: Reconciliation produces one canonical regime (no competing interpretations).</p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §13 INTEGRATION PATTERNS                            -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec13">§13 Integration Patterns</h1>
+    <div class="card">
+      <p>
+        AEGON integrates cleanly with existing observability and incident workflows because it outputs declarative policy bundles.
+        The compiler does not require invasive changes to the runtime system.
+      </p>
+
+      <h2 class="subsection-title">§13.1 Pattern: CI/CD Policy Artifact Promotion</h2>
+      <p>
+        Treat compiled policy bundles like build artifacts: versioned, diffed, approved, and promoted.
+        This supports stable governance and deterministic rollback.
+      </p>
+
+      <h2 class="subsection-title">§13.2 Pattern: Human-in-the-Loop Approval</h2>
+      <p>
+        AEGON can be deployed as a semantic policy generator whose output requires explicit approval before execution by downstream systems.
+        This supports high-safety environments and legal review.
+      </p>
+
+      <h2 class="subsection-title">§13.3 Pattern: External Enforcement Layer</h2>
+      <p>
+        Downstream enforcement systems interpret AEGON policy bundles and perform controlled actions. AEGON remains agnostic to the
+        enforcement mechanism, preserving semantic stability.
+      </p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §14 LICENSING AND SUPPORT                           -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec14">§14 Licensing and Support</h1>
+    <div class="card">
+      <p>
+        AEGON is distributed as a deterministic compiler with documentation and canonical output formats. Licensing may vary by tier,
+        deployment model, and support requirements.
+      </p>
+
+      <h2 class="subsection-title">§14.1 Support Scope</h2>
+      <p>
+        Support typically includes: policy language onboarding, canonical output validation, integration guidance, and deterministic
+        compilation troubleshooting. Enforcement-layer engineering is explicitly out of scope unless contracted separately.
+      </p>
+
+      <div class="note">
+        <span class="label">Contact</span>
+        <span class="small">AAD Systems · Adrian Diamond · <span class="mono">adrian@aadsystems.com</span></span>
+      </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- §15 SCOPE, NON-GOALS, CONCLUSION                    -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="sec15">§15 Scope, Non-Goals, and Conclusion</h1>
+    <div class="card">
+      <p>
+        AEGON is a deterministic compiler from finite failure semantics to canonical policy artifacts. Its value is semantic stability:
+        a finite ontology of regimes, repeatable compilation, and audit-friendly outputs that support governance.
+      </p>
+
+      <div class="warning">
+        <span class="label">Explicit Non-Goals</span>
+        <span class="small">
+          AEGON does not execute policy, does not enforce policy, does not learn, does not infer, does not optimize, and does not perform
+          autonomous remediation.
+        </span>
+      </div>
+
+      <p>
+        By separating interpretation (failure-class semantics) from action representation (policy bundles), AEGON supports enterprise-grade
+        reliability workflows where deterministic meaning and controlled response are required.
+      </p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- APPENDICES                                          -->
+    <!-- ================================================== -->
+    <h1 class="section-title" id="appendices">Appendices</h1>
+
+    <!-- Appendix A -->
+    <h1 class="section-title" id="appendix-a">Appendix A — Glossary</h1>
+    <div class="card">
+      <p class="small">Key terms used throughout this Developer Guide.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">AEGON</td>
+            <td>Finite semantic system for deterministic classification and compilation of policy artifacts.</td>
+          </tr>
+          <tr>
+            <td class="mono">Failure Class</td>
+            <td>A semantic atom representing a violated structural invariant of a system.</td>
+          </tr>
+          <tr>
+            <td class="mono">Ontology</td>
+            <td>A finite, closed set of meaningful regimes in a domain (here: failure classes).</td>
+          </tr>
+          <tr>
+            <td class="mono">Semantic Regime</td>
+            <td>A resolved failure-class interpretation that represents the system’s meaning-state for policy selection.</td>
+          </tr>
+          <tr>
+            <td class="mono">Policy Bundle</td>
+            <td>A structured declarative artifact containing trigger, gate, actions, evidence, and annotations.</td>
+          </tr>
+          <tr>
+            <td class="mono">Policy IR</td>
+            <td>The internal representation schema for policy bundles (stable and serializable).</td>
+          </tr>
+          <tr>
+            <td class="mono">Canonicalization</td>
+            <td>Normalization rules producing stable, deterministic output under identical inputs.</td>
+          </tr>
+          <tr>
+            <td class="mono">Neutral Policy</td>
+            <td>Explicit compiled non-action bundle corresponding to the neutral semantic regime.</td>
+          </tr>
+          <tr>
+            <td class="mono">Determinism</td>
+            <td>Same input yields same output under repeated evaluation, independent of time or environment.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Appendix B -->
+    <h1 class="section-title" id="appendix-b">Appendix B — Error Catalog</h1>
+    <div class="card">
+      <p class="small">
+        This catalog lists common compiler error classes in stable, deterministic form.
+        Implementations may extend this list without changing the semantics of existing errors.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Error Code</th>
+            <th>Name</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">E001</td>
+            <td class="mono">ParseError</td>
+            <td>Invalid opcode sequence or malformed policy source.</td>
+          </tr>
+          <tr>
+            <td class="mono">E002</td>
+            <td class="mono">UnknownFailureClass</td>
+            <td>Policy references a failure class symbol not in the finite ontology.</td>
+          </tr>
+          <tr>
+            <td class="mono">E003</td>
+            <td class="mono">InvalidParameter</td>
+            <td>Parameter violates allowed type or key-domain constraints.</td>
+          </tr>
+          <tr>
+            <td class="mono">E004</td>
+            <td class="mono">UnsupportedTier</td>
+            <td>Tier identifier is not recognized by the configured capability gate set.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Appendix C -->
+    <h1 class="section-title" id="appendix-c">Appendix C — Index</h1>
+    <div class="card">
+      <p class="small">Index entries include section numbers using the § symbol.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Index Entry</th>
+            <th>Where</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AEGON overview</td>
+            <td>§1</td>
+          </tr>
+          <tr>
+            <td>Conceptual model (pipeline)</td>
+            <td>§2</td>
+          </tr>
+          <tr>
+            <td>Inputs and outputs</td>
+            <td>§3</td>
+          </tr>
+          <tr>
+            <td>Failure-class semantics</td>
+            <td>§4</td>
+          </tr>
+          <tr>
+            <td>Policy bundles / Policy IR</td>
+            <td>§5</td>
+          </tr>
+          <tr>
+            <td>Minimal policy language</td>
+            <td>§6</td>
+          </tr>
+          <tr>
+            <td>Opcodes and constructs</td>
+            <td>§7</td>
+          </tr>
+          <tr>
+            <td>Parsing and canonicalization</td>
+            <td>§8</td>
+          </tr>
+          <tr>
+            <td>Compilation determinism</td>
+            <td>§9</td>
+          </tr>
+          <tr>
+            <td>Errors and diagnostics</td>
+            <td>§10, Appendix B</td>
+          </tr>
+          <tr>
+            <td>Security and governance</td>
+            <td>§11</td>
+          </tr>
+          <tr>
+            <td>Example workflows</td>
+            <td>§12</td>
+          </tr>
+          <tr>
+            <td>Integration patterns</td>
+            <td>§13</td>
+          </tr>
+          <tr>
+            <td>Licensing and support</td>
+            <td>§14</td>
+          </tr>
+          <tr>
+            <td>Scope and non-goals</td>
+            <td>§15</td>
+          </tr>
+          <tr>
+            <td>Glossary</td>
+            <td>Appendix A</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+    <p class="small" style="text-align:center; color: rgba(255,255,255,0.55);">
+      © 2026 AAD Systems™ · AEGON™ Policy Compiler Developer Guide (Extended Edition v1)
+    </p>
+
+  </main>
+</body>
+</html>
